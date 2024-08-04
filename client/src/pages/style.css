@@ -1,5 +1,6 @@
 @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700;800&display=swap");
 :root{
+  
   --shadow-color: 213deg 11% 57%;
   --shadow-elevation-medium:
     0.7px 0.2px 0.8px hsl(var(--shadow-color) / 0.36),
@@ -415,6 +416,7 @@ form.sign-in-form {
 /*   
   background-color: red; */
   display: flex;
+  position:relative;
   /* gap: 1em; */
   background-color: #e2e8ef;
 }
@@ -431,14 +433,21 @@ form.sign-in-form {
   /* box-shadow: var(--shadow-elevation-medium); */
   /* overflow-y: scroll; */
 }
+.dummySide{
+  height: 100vh;
+  width: 20%;
+  background-color: #e2e8ef;
+}
 .sideBarDesign{
   width: 20%;
-  
+  position: fixed;
+  top: 0;
+  left: 0;
   background-color: #e2e8ef;
   height: 100vh;
   /* background-color: yellow; */
   /* border-radius: 0 5em 5em 0; */
-  z-index: 5;
+  /* z-index: 5; */
   
 }
 .sid1,.sid2{
@@ -464,16 +473,18 @@ form.sign-in-form {
   box-shadow: 60px 60px 0 1px white;
   height: 120px;
   width: 120px;
-  z-index: 10;
+  z-index: 0;
 }
 .mainContent{
   width:80%;
+  z-index: 1;
   background-color: #fff;
   color: black;
-  background-color: #e2e8ef;
-  background-color: white;
+  /* background-color: #e2e8ef; */
+  /* background-color: white; */
   display: flex;
   flex-direction: column;
+  /* background-color: yellow; */
   
 }.headerContent{
   width: 100%;
@@ -585,4 +596,17 @@ form.sign-in-form {
 .navBarClass li{
   padding: 1em;
 
+}
+.navBarClass li a{
+  color: black;
+}
+.navBarClass ul li a.active {
+  /* Your active link styles here */
+  font-weight: bold;
+  color: red;
+}
+.displayContent{
+  /* background-color: yellowgreen; */
+  width: 100%;
+  
 }

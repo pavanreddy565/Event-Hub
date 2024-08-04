@@ -1,11 +1,20 @@
 import React,{useState,useEffect} from 'react'
 import './style.css'
+import {Routes,Route,Link} from "react-router-dom"
+import { BrowserRouter,NavLink,useLocation} from 'react-router-dom';
+import Home from '../pages/studentNavgationPages/Home'
+import Applied from '../pages/studentNavgationPages/Applied'
+import Explore from '../pages/studentNavgationPages/Explore'
+import Deadline from '../pages/studentNavgationPages/Deadline'
+import Saved from '../pages/studentNavgationPages/Saved'
 
 function Dashboard() {
   const [userDetails, setUserDetails] = useState(null);
   const [searchText, setSearch]=useState('');
   const [searchSkills, setSearchSkills] = useState('');
 
+  const location = useLocation();
+  const isActive = location.pathname;
   useEffect(() => {
     const storedUserDetails = localStorage.getItem('userDetails');
     if (storedUserDetails) {
@@ -20,7 +29,8 @@ function Dashboard() {
   const img_ = userDetails && userDetails.profileImg ? storedUserDetails.profileImg : '../src/assets/image.png';
   return (
     <div className="sideContainer">
-      
+      <div className="dummySide">
+      </div>
       <div className="sideBarDesign">
         <div className="sid1"></div>
         <div className="sideBar">
@@ -57,13 +67,22 @@ function Dashboard() {
         </div>
         <div className="navBarClass">
             <ul>
-              <li>Home</li>
-              <li>Explore</li>
-              <li>Applied</li>
-              <li>DeadLine</li>
-              <li>Saved</li>
+              <li className={`${isActive==='/dashboard/' ?'Active':null}`}><NavLink to='/dashboard/' end>Home</NavLink></li>
+              <li className={`${isActive==='/dashboard/Explore' ?'Active':null}`}><NavLink to='/dashboard/Explore'>Explore</NavLink></li>
+              <li className={`${isActive==='/dashboard/Applied' ?'Active':null}`}><NavLink to='/dashboard/Applied'>Applied</NavLink></li>
+              <li className={`${isActive==='/dashboard/Deadline' ?'Active':null}`}><NavLink to='/dashboard/Deadline'>DeadLine</NavLink></li>
+              <li className={`${isActive==='/dashboard/Saved' ?'Active':null}`}><NavLink to='/dashboard/Saved'>Saved</NavLink></li>
             </ul>
             
+        </div>
+        <div className="displayContent">
+          <Routes>
+              <Route index element={<Home />} />
+              <Route path="Applied" element={<Applied/> } />
+              <Route path='Explore' element={<Explore />} />
+              <Route path='Deadline' element={<Deadline />} />
+              <Route path='Saved' element={<Saved />} />
+          </Routes>
         </div>
         
       </div>
