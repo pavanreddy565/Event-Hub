@@ -432,6 +432,52 @@ form.sign-in-form {
   gap:1.5em;
   /* box-shadow: var(--shadow-elevation-medium); */
   /* overflow-y: scroll; */
+  
+}
+.sideSearch{
+  display: flex;
+  width: 100%;
+  /* background-color: red; */
+  justify-content: center;
+  flex-direction: column;
+  position: relative;
+  align-items: center;
+}
+.searchOptions {
+  width: 100%;
+  /* min-height: 50px;  */
+  background-color: white;
+  display: flex;
+  flex-direction: column;
+  /* gap: .3em; */
+  position: absolute;
+  top: 1em;
+  left: 0;
+  border-radius: 0 0 1em 1em;
+  justify-content: center;
+  align-items: center;
+  
+}
+
+
+.searchOptionRow{
+  background-color: whitesmoke;
+  width: 90%;
+  padding: .2em;
+  /* height: 20px; */
+  color: black;
+  /* border:.5px solid black */
+}
+.searchOptionRow:nth-child(1){
+  margin-top: 1em;
+}
+.interstList{
+  background-color: yellow;
+  color: black;
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, cal);
+
 }
 .dummySide{
   height: 100vh;
@@ -520,6 +566,7 @@ form.sign-in-form {
   
   
 }
+
 .search_bar{
   width: 100%;
   display: flex;
@@ -531,6 +578,7 @@ form.sign-in-form {
   color: black;
   border-radius: 2em;
   border: 1px solid black;
+  z-index: 1;
 }
 .search_bar input[type="text"]{
   width:90%;
@@ -608,5 +656,7 @@ form.sign-in-form {
 .displayContent{
   /* background-color: yellowgreen; */
   width: 100%;
+  padding: 0 2em;
+  /* background-color: yellow; */
   
 }
