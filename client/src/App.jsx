@@ -3,6 +3,7 @@ import Login from './pages/Login'
 import Dashboard from './pages/Dashboard';
 import Adminboard from './pages/Adminboard';
 import Unauthorized from './pages/Unauthorized';
+import Profile from './pages/Profile';
 import './App.css'
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { Navigate } from 'react-router-dom';
@@ -43,6 +44,14 @@ function App() {
             element={
               <ProtectedRoute allowedRoles={['admin']}>
                 <Adminboard/>
+              </ProtectedRoute>
+            }
+          />
+          <Route 
+            path='/profile' 
+            element={
+              <ProtectedRoute allowedRoles={['student', 'teacher']}>
+                <Profile/>
               </ProtectedRoute>
             }
           />

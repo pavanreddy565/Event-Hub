@@ -36,6 +36,27 @@ app.post('/studentLogin',async (req, res) => {
         })
 
 })
+app.post('/update',async (req,res)=>{
+    const userDetails=req.body;
+    console.log(userDetails.userName)
+    db.collection('Students').where("userName", "==",userDetails.userName).get()
+        .then((snapshot)=>{
+            //console.log(snapshot.docs[0].data());
+            if(snapshot.empty){
+                res.status(401).json({error:"Invalid username"});
+            }else{
+                snapshot.forEach((doc)=>{
+                    doc.ref.update(userDetails);
+                })
+                res.status(200).json({message:'login successful',userDetails:userDetails});
+            }
+            
+        })
+        .catch((error)=>{
+            console.log('error during login',error);
+            res.status(500).json({error:'internal server error'});
+        })
+    })
 app.post('/StudentAdmin', async (req, res) => {
     const { start, end } = req.body;
     const promises = [];

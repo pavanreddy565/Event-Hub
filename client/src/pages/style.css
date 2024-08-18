@@ -200,7 +200,9 @@ form.sign-in-form {
   text-align: center;
   z-index: 6;
 }
-
+.sideBarHeading h3{
+  color: white;
+}
 .left-panel {
   pointer-events: all;
   padding: 3rem 17% 2rem 12%;
@@ -472,12 +474,33 @@ form.sign-in-form {
   margin-top: 1em;
 }
 .interstList{
-  background-color: yellow;
+  /* background-color: yellow; */
   color: black;
   width: 100%;
-  display: grid;
-  grid-template-columns: repeat(auto-fill, cal);
+  display: flex;
+  flex-wrap: wrap;
+  gap:1em;
+  padding: .5em;
+  justify-content: center;
 
+}.skillName{
+  background-color: #4481eb;
+  /* border: 2px solid midnightblue; */
+  border-radius: 2em;
+  padding: .2em .7em ;
+  color: #fff;
+  font-weight: 200;
+}
+.a_skill_search{
+  font-weight: 200;
+  color: black;
+}
+.skillName a{
+  color: white;
+  text-decoration: none;
+}
+.skillName a:hover{
+  color: red;
 }
 .dummySide{
   height: 100vh;
@@ -615,10 +638,11 @@ form.sign-in-form {
   display: flex;
   justify-content: center;
   align-items: center;
+  overflow: hidden;
   /* background-color: green; */
   /* overflow: hidden; */
 }
-.profile img{
+.profile a img{
   width: 45px;
   height: 45px;
   border-radius: 50%;

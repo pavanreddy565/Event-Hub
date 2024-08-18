@@ -1,6 +1,7 @@
 import React,{useState,useEffect,useMemo} from 'react'
 import './style.css'
 import {Routes,Route,Link} from "react-router-dom"
+import axios from 'axios';
 import { BrowserRouter,NavLink,useLocation} from 'react-router-dom';
 import Home from '../pages/studentNavgationPages/Home'
 import Applied from '../pages/studentNavgationPages/Applied'
@@ -13,9 +14,23 @@ function Dashboard() {
   const [userDetails, setUserDetails] = useState(null);
   const [searchText, setSearch]=useState('');
   const [searchSkills, setSearchSkills] = useState('');
-  const [AvaSkills,setAvaSkils] = useState(['React','Machine Learning', 'MERN',"MEAN", "CyberSecurity",'WebDevlopment','UI/UX','Debate','Competative Coding'])
+  const [AvaSkills,setAvaSkills] = useState(['React','Machine Learning', 'MERN',"MEAN", "CyberSecurity",'WebDevelopment','UI/UX','Debate','Competative Coding'])
   const location = useLocation();
   const isActive = location.pathname;
+  const [events, setEvents] = useState([]);  
+  useEffect(() => {
+    const fetchEvents = async () => {
+      try {
+        const response = await axios.get('http://localhost:8080/getEvent');
+        setEvents(response.data);  
+      } catch (error) {
+        console.error('Error fetching events:', error);
+       
+      }
+    };
+
+    fetchEvents();
+  }, []);
 
   const filteredSkills = useMemo(() => {
     const searchTerm = searchSkills.toLowerCase();
@@ -31,15 +46,24 @@ function Dashboard() {
       setUserDetails(JSON.parse(storedUserDetails));
     }
   }, []);
+
   
   
-  const user_skills =userDetails && userDetails.userSkills ?userDetails.userSkills:['java','python','webdevelopment']; 
-  const [userSkills,setuserSkills]=useState(user_skills);
+  
+  const user_skills =userDetails && userDetails.skills ?userDetails.skills:[]; 
+  const [userSkills,setUserSkills]=useState(user_skills);
+  
+  useEffect(()=>{
+    setUserSkills(userDetails && userDetails.skills ?userDetails.skills:[]);
+  },[userDetails])
 
   const list_items= useMemo(()=>{
     // console.log(userSkills);
     return userSkills.map((skill,index)=>(
-      <div key={index} className='skillName'>{skill}</div>
+      <div key={index} className='skillName'><a onClick={(e)=>{
+        e.preventDefault();
+        setUserSkills(prevSkills => prevSkills.filter(value => value !== skill));
+      }}>{skill}</a></div>
     ));
   },[userSkills]);
   // console.log(list_items);
@@ -58,7 +82,10 @@ function Dashboard() {
         <div className="sideSearch">
             <div className="search_bar" >
                 <input type="text" placeholder="Add Your Interest..." onChange={(e)=>setSearchSkills(e.target.value)} value={searchSkills}/>
-                <i className="fa fa-search"></i>
+                <a className='a_skill_search' onClick={()=>{
+                  setUserSkills((userSkills)=>[...userSkills,searchSkills]);
+                  setSearchSkills((searchSkills)=>"");
+                }}><i className="fa fa-search"></i></a>
             </div>
             <div className="searchOptions">
               {filteredSkills.map((item) => (
@@ -79,7 +106,7 @@ function Dashboard() {
       </div>
       <div className="mainContent">
         <div className="headerContent">
-          <div className="wishUser"><h1>Welcome, {userDetails.userName}</h1></div>
+          <div className="wishUser"><h1>Welcome, {userDetails.name}</h1></div>
           <div className="generalUI">
             <div className="searchThings">
                 <div className="search_bar">
@@ -92,7 +119,7 @@ function Dashboard() {
             </div>
             <div className="userProfile">
               <div className="profile">
-                <img src={img_} alt=""/>
+              <Link to={'/profile'} ><img src={img_} alt=""/></Link>
               </div>
             </div>
           </div>
