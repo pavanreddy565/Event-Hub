@@ -1,5 +1,6 @@
 import React, {useState,useMemo} from 'react'
 import '../studentNavgationPages/event.scss'
+import { Link } from 'react-router-dom';
 
 function Event(props) {
     const [event,setEvent] =useState(props.val)
@@ -23,10 +24,18 @@ function Event(props) {
                     <div className="userProfile_img">
                         <img src={img_} alt="" />
                     </div>
-                    <a href={event.link} target='_blank' className="profile_info">
-                        <h3 className="companyName">{event.EventName}</h3>
-                        <h5 className="role">{event.Host_Role}</h5>
-                    </a>
+                    
+                    {applied ? (
+                            <div className='profile_info'>
+                                <h3 className="companyName">{event.EventName}</h3>
+                                <h5 className="role">{event.Host_Role}</h5>
+                            </div>
+                            ) : (
+                            <Link to={`/event/${encodeURIComponent(event.EventName)}`} className='profile_info'>
+                                <h3 className="companyName">{event.EventName}</h3>
+                                <h5 className="role">{event.Host_Role}</h5>
+                            </Link>
+                            )}
             </div>
                 
             

@@ -4,6 +4,7 @@ import Dashboard from './pages/Dashboard';
 import Adminboard from './pages/Adminboard';
 import Unauthorized from './pages/Unauthorized';
 import Profile from './pages/Profile';
+import EventCard from './pages/EventCard';
 import './App.css'
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { Navigate } from 'react-router-dom';
@@ -52,6 +53,14 @@ function App() {
             element={
               <ProtectedRoute allowedRoles={['student', 'teacher']}>
                 <Profile/>
+              </ProtectedRoute>
+            }
+          />
+          <Route 
+            path='/event/:eventName' 
+            element={
+              <ProtectedRoute allowedRoles={['student', 'teacher']}>
+                <EventCard/>
               </ProtectedRoute>
             }
           />

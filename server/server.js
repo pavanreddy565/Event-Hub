@@ -58,8 +58,26 @@ app.post('/update',async (req,res)=>{
             res.status(500).json({error:'internal server error'});
         })
     })
-
-
+    
+    app.post('/getEvent', async (req, res) => {
+        const {EventName}=req.body;
+        console.log(EventName);
+        try {
+            const snapshot = await db.collection("Events")
+            .where("EventName", "==", EventName).get();
+            //console.log(snapshot);
+            if (snapshot.empty) {
+                return res.status(404).json({ error: "No events found" });
+            }
+    
+           
+    
+            res.status(200).json({ message: 'Events retrieved successfully', events:snapshot.docs[0].data() });
+        } catch (error) {
+            console.error('Error fetching events:', error);
+            res.status(500).json({ error: 'Internal server error' });
+        }
+    });
     app.get('/getEvent', async (req, res) => {
         try {
             const snapshot = await db.collection('Events').get();
