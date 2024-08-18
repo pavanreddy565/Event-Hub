@@ -14,6 +14,7 @@ function Dashboard() {
   const [userDetails, setUserDetails] = useState(null);
   const [searchText, setSearch]=useState('');
   const [searchSkills, setSearchSkills] = useState('');
+  const [notification,setNotification] = useState(false);
   const [AvaSkills,setAvaSkills] = useState(['React','Machine Learning', 'MERN',"MEAN", "CyberSecurity",'WebDevelopment','UI/UX','Debate','Competative Coding'])
   const location = useLocation();
   const isActive = location.pathname;
@@ -37,6 +38,21 @@ function Dashboard() {
     fetchEvents();
   }, []);
 
+  const [eventTitles, setEventTitles] = useState([]);
+
+  useEffect(() => {
+    if (events && Array.isArray(events)) {
+      const titles = events.map(event => event.EventName);
+      setEventTitles(titles);
+    }
+  }, [events]);
+  const filteredevents = useMemo(() => {
+    const searchTerm = searchText.toLowerCase();
+    return eventTitles.filter((item) => {
+      const ava = item.toLowerCase();
+      return searchTerm && ava.startsWith(searchTerm) && ava !== searchTerm;
+    });
+  }, [searchText, eventTitles]);
   const filteredSkills = useMemo(() => {
     const searchTerm = searchSkills.toLowerCase();
     return AvaSkills.filter((item) => {
@@ -67,9 +83,10 @@ function Dashboard() {
   },[userDetails])
 
 
+
   const list_items= useMemo(()=>{
     // console.log(userSkills);
-    return userSkills.map((skill,index)=>(
+    return userSkills.sort((a, b) => b.length - a.length).map((skill,index)=>(
       <div key={index} className='skillName'><a onClick={(e)=>{
         e.preventDefault();
         setUserSkills(prevSkills => prevSkills.filter(value => value !== skill));
@@ -129,10 +146,30 @@ function Dashboard() {
                 <div className="search_bar">
                       <input type="text" placeholder="Search" onChange={(e)=>setSearch(e.target.value)} value={searchText}/>
                       <i className="fa fa-search"></i>
-                  </div>
+                </div>
+                <div className="searchOptions">
+                  {filteredevents.map((item) => (
+                    
+                    <div
+                      // onClick={() => setSearch(item)}
+                      className='searchOptionRow'
+                      key={item}
+                    >
+                      <Link to={`/event/${encodeURIComponent(item)}`} className='profile_info'>
+                        {item}
+                      </Link>
+                    </div>
+                    
+                  ))}
+                </div>
             </div>
             <div className="notifications">
-              <i className="fa fa-bell bell" style={{fontSize: "24px"}}></i>
+              <i  onClick={()=>{setNotification(item=>!item)}} className="fa fa-bell bell" style={{fontSize: "24px"}}></i>
+              {notification && <div className="notification_pannel">
+                  <h4>No notifications</h4>
+                </div>
+              }
+              
             </div>
             <div className="userProfile">
               <div className="profile">
