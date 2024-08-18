@@ -1,4 +1,4 @@
-import React,{useState,useEffect,useMemo} from 'react'
+import React,{useState,useEffect,useMemo, createContext} from 'react'
 import './style.css'
 import {Routes,Route,Link} from "react-router-dom"
 import axios from 'axios';
@@ -9,7 +9,7 @@ import Explore from '../pages/studentNavgationPages/Explore'
 import Deadline from '../pages/studentNavgationPages/Deadline'
 import Saved from '../pages/studentNavgationPages/Saved'
 
-
+export const EventContext =React.createContext();
 function Dashboard() {
   const [userDetails, setUserDetails] = useState(null);
   const [searchText, setSearch]=useState('');
@@ -22,7 +22,12 @@ function Dashboard() {
     const fetchEvents = async () => {
       try {
         const response = await axios.get('http://localhost:8080/getEvent');
-        setEvents(response.data);  
+      
+        if(response.status === 200) {
+          setEvents(response.data.events);
+          
+        }
+          
       } catch (error) {
         console.error('Error fetching events:', error);
        
@@ -52,10 +57,15 @@ function Dashboard() {
   
   const user_skills =userDetails && userDetails.skills ?userDetails.skills:[]; 
   const [userSkills,setUserSkills]=useState(user_skills);
+  const [AppliedEvents,setAppliedEvents]=useState(userDetails && userDetails.AppliedEvents ?userDetails.AppliedEvents:[])
+  const [SavedEvents,setSavedEvents]=useState(userDetails && userDetails.SavedEvents?userDetails.SavedEvents:[]);
   
   useEffect(()=>{
     setUserSkills(userDetails && userDetails.skills ?userDetails.skills:[]);
+    setAppliedEvents(userDetails && userDetails.AppliedEvents ?userDetails.AppliedEvents:[])
+    setSavedEvents(userDetails && userDetails.SavedEvents?userDetails.SavedEvents:[])
   },[userDetails])
+
 
   const list_items= useMemo(()=>{
     // console.log(userSkills);
@@ -83,7 +93,14 @@ function Dashboard() {
             <div className="search_bar" >
                 <input type="text" placeholder="Add Your Interest..." onChange={(e)=>setSearchSkills(e.target.value)} value={searchSkills}/>
                 <a className='a_skill_search' onClick={()=>{
-                  setUserSkills((userSkills)=>[...userSkills,searchSkills]);
+                  const cap =(str)=>{
+                    return str
+                        .toLowerCase()
+                        .split(' ')
+                        .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+                        .join(' ');
+                  }
+                  setUserSkills((userSkills)=>[...userSkills,cap(searchSkills)]);
                   setSearchSkills((searchSkills)=>"");
                 }}><i className="fa fa-search"></i></a>
             </div>
@@ -135,13 +152,15 @@ function Dashboard() {
             
         </div>
         <div className="displayContent">
-          <Routes>
-              <Route index element={<Home />} />
-              <Route path="Applied" element={<Applied/> } />
-              <Route path='Explore' element={<Explore />} />
-              <Route path='Deadline' element={<Deadline />} />
-              <Route path='Saved' element={<Saved />} />
-          </Routes>
+          <EventContext.Provider value={{events,userSkills,AppliedEvents}}>
+            <Routes>
+                <Route index element={<Home />} />
+                <Route path="Applied" element={<Applied appliedEvent={AppliedEvents}/> } />
+                <Route path='Explore' element={<Explore />} />
+                <Route path='Deadline' element={<Deadline />} />
+                <Route path='Saved' element={<Saved savedEvent={SavedEvents}/>} />
+            </Routes>
+          </EventContext.Provider>
         </div>
         
       </div>

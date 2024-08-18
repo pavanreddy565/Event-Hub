@@ -1,2 +1,4 @@
 node_modules
 serviceAccountKey.json
+package.json
+package-lock.json

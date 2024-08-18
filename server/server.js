@@ -36,6 +36,7 @@ app.post('/studentLogin',async (req, res) => {
         })
 
 })
+
 app.post('/update',async (req,res)=>{
     const userDetails=req.body;
     console.log(userDetails.userName)
@@ -57,6 +58,27 @@ app.post('/update',async (req,res)=>{
             res.status(500).json({error:'internal server error'});
         })
     })
+
+
+    app.get('/getEvent', async (req, res) => {
+        try {
+            const snapshot = await db.collection('Events').get();
+            
+            if (snapshot.empty) {
+                return res.status(404).json({ error: "No events found" });
+            }
+    
+            const events = snapshot.docs.map(doc => ({
+                ...doc.data()
+            }));
+    
+            res.status(200).json({ message: 'Events retrieved successfully', events });
+        } catch (error) {
+            console.error('Error fetching events:', error);
+            res.status(500).json({ error: 'Internal server error' });
+        }
+    });
+
 app.post('/StudentAdmin', async (req, res) => {
     const { start, end } = req.body;
     const promises = [];
