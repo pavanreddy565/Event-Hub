@@ -5,6 +5,7 @@ import './home.scss'
 
 function Applied(props) {
   const [AppliedEvents,setAppliedEvents] = useState(props.appliedEvent)
+  
   if (AppliedEvents.length==0){
     return (
       <div className="apply"></div>
