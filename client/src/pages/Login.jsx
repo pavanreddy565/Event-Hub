@@ -54,7 +54,13 @@ function login() {
               role: type
             }));
             localStorage.setItem('isAuthenticated', 'true');
-            navigate('/dashboard')
+            if(type === 'student'){
+              navigate('/dashboard')
+            }else{
+              console.log(type);
+              navigate('/teacher');
+            }
+            
           }
           
         }).catch(err=>console.log(err));

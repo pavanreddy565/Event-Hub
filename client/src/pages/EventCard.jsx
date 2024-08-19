@@ -78,35 +78,37 @@ const EventCard = () => {
     if (error) return <div>{error}</div>;
     if (!event) return <div>No event found</div>;
     return (
-        <div className="event-card">
-        <img src={`https://via.placeholder.com/800x300.png?text=${encodeURIComponent(event.EventName)}`} alt={event.EventName} className="event-image" />
-        <div className="event-details">
-            <h1>{event.EventName}</h1>
-            <p className="host-role">Hosted by: {event.Host_Role}</p>
-            <p className="description">{event.Description}</p>
-            <div className="skills">
-            {event.skills.map((skill, index) => (
-                <span key={index} className="skill">{skill}</span>
-            ))}
+        <div className="eventCard_wrap">
+            <div className="event-card">
+            <img src={`https://via.placeholder.com/800x300.png?text=${encodeURIComponent(event.EventName)}`} alt={event.EventName} className="event-image" />
+            <div className="event-details">
+                <h1>{event.EventName}</h1>
+                <p className="host-role">Hosted by: {event.Host_Role}</p>
+                <p className="description">{event.Description}</p>
+                <div className="skills">
+                {event.skills.map((skill, index) => (
+                    <span key={index} className="skill">{skill}</span>
+                ))}
+                </div>
+                <div className="accountSession">
+                    <a href={event.link} className="link" target="_blank" rel="noopener noreferrer">Learn More</a>
+                    <button onClick={
+                            ()=>{
+                                const data={...userDetails,SavedEvents:[...SavedEvents,event.EventName]}
+                                axios.post(`http://localhost:8080/update`,data)
+                                .then(result=>{
+                                    console.log(result);
+                                    if (result.status ===200){
+                                        localStorage.setItem('userDetails',JSON.stringify(data));
+                                        navigate('/dashboard')
+                                    }
+                                })
+                            }
+                        }>Save</button>
+                    <button onClick={handleApply}>Apply</button>
+                </div>
             </div>
-            <div className="accountSession">
-                <a href={event.link} className="link" target="_blank" rel="noopener noreferrer">Learn More</a>
-                <button onClick={
-                        ()=>{
-                            const data={...userDetails,SavedEvents:[...SavedEvents,event.EventName]}
-                            axios.post(`http://localhost:8080/update`,data)
-                            .then(result=>{
-                                console.log(result);
-                                if (result.status ===200){
-                                    localStorage.setItem('userDetails',JSON.stringify(data));
-                                    navigate('/dashboard')
-                                }
-                            })
-                        }
-                    }>Save</button>
-                <button onClick={handleApply}>Apply</button>
             </div>
-        </div>
         </div>
     );
 };

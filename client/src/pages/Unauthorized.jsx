@@ -1,8 +1,9 @@
 import React from 'react'
+import './Unauthorized.scss'
 
 function Unauthorized() {
   return (
-    <div>Unauthorized</div>
+    <div className='unauthor'>Unauthorized</div>
   )
 }
 

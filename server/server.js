@@ -37,6 +37,25 @@ app.post('/studentLogin',async (req, res) => {
 
 })
 
+app.post('/teacherLogin',async (req, res) => {
+    const {userName, password} =req.body;
+    console.log(userName, password);
+    db.collection('Teachers').where('userName','==', userName).where('password','==', password).get()
+        .then((snapshot)=>{
+            if(snapshot.empty){
+                res.status(401).json({error:"Invalid username or password"});
+            }else{
+                const user = snapshot.docs[0].data();
+                res.status(200).json({message:'login successful',userDetails:user});
+            }
+        })
+        .catch((error)=>{
+            console.log('error during login',error);
+            res.status(500).json({error:'internal server error'});
+        })
+
+})
+
 app.post('/update',async (req,res)=>{
     const userDetails=req.body;
     console.log(userDetails.userName)

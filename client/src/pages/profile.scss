@@ -30,20 +30,27 @@ $border-radius: 12px;
 }
 body {
   font-family: 'Poppins', sans-serif;
-  background-color: #1f3273;
+  
   color: $text-color;
   line-height: 1.6;
   margin: 0;
   padding: 0;
 }
-
-.student-profile {
-  max-width: 900px;
-  margin: 2rem auto;
-  padding: 2rem;
-  display: relative;
-  @include card-style;
+.profile_wrap{
+  background-color: #1f3273;
+  width: 100%;
+  padding: 2em 0;
+  .student-profile {
+    max-width: 900px;
+    margin: 0rem auto;
+    padding: 2rem;
+    display: relative;
+    @include card-style;
+  }
+  
+  
 }
+
 
 // Profile header
 .profile-header {

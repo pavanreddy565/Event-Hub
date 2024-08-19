@@ -2,6 +2,7 @@ import { useState } from 'react'
 import Login from './pages/Login'
 import Dashboard from './pages/Dashboard';
 import Adminboard from './pages/Adminboard';
+import Teacherboard from './pages/Teacherboard';
 import Unauthorized from './pages/Unauthorized';
 import Profile from './pages/Profile';
 import EventCard from './pages/EventCard';
@@ -35,11 +36,20 @@ function App() {
           <Route 
             path='/dashboard/*' 
             element={
-              <ProtectedRoute allowedRoles={['student', 'teacher']}>
+              <ProtectedRoute allowedRoles={['student']}>
                 <Dashboard/>
               </ProtectedRoute>
             }
           />
+           <Route 
+            path='/teacher/*' 
+            element={
+              <ProtectedRoute allowedRoles={[ 'teacher']}>
+                <Teacherboard/>
+              </ProtectedRoute>
+            }
+          />
+
           <Route 
             path='/admin' 
             element={
