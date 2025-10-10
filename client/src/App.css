@@ -28,6 +28,10 @@
     transform: rotate(360deg);
   }
 }
+body{
+  margin: 0;
+  padding: 0;
+}
 
 @media (prefers-reduced-motion: no-preference) {
   a:nth-of-type(2) .logo {

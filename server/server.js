@@ -77,6 +77,48 @@ app.post('/update',async (req,res)=>{
             res.status(500).json({error:'internal server error'});
         })
     })
+app.post('/apply', async (req, res) => {
+  const userDetails = req.body;
+  const { userName, EventName } = userDetails;
+
+  if (!userName || !EventName) {
+    return res.status(400).json({ error: "Missing userName or EventName" });
+  }
+
+  try {
+    // First: Update user details
+    const snapshot = await db.collection('Students').where("userName", "==", userName).get();
+
+    if (snapshot.empty) {
+      return res.status(401).json({ error: "Invalid username" });
+    }
+
+    snapshot.forEach(doc => {
+      doc.ref.update(userDetails);
+    });
+
+    // Second: Add event registration
+    const registration = {
+      userName,
+      EventName,
+      timestamp: new Date()
+    };
+
+    await db.collection('Applied').add(registration);
+    
+    res.status(200).json({
+      message: "Apply successful",
+      updatedUser: userDetails,
+      registration
+    });
+
+  } catch (error) {
+    console.error("Error during apply process", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+
     
     app.post('/getEvent', async (req, res) => {
         const {EventName}=req.body;
@@ -134,6 +176,128 @@ app.post('/StudentAdmin', async (req, res) => {
     }
 });
 
+app.post('/teacherEvent', async (req, res) => {
+    const teacherDetails = req.body;
+    const teacherName = teacherDetails.userName;
+
+    
+    if (!teacherName) {
+        return res.status(400).json({ error: "Missing teacher username (userName)" });
+    }
+
+    try {
+       
+        const snapshot = await db.collection('Events')
+            .where('PostedBy', '==', teacherName)
+            .get();
+
+        if (snapshot.empty) {
+            return res.status(404).json({ message: "No events found for this teacher." });
+        }
+
+        
+        const events = snapshot.docs.map(doc => ({
+            id: doc.id,
+            ...doc.data()
+        }));
+
+        res.status(200).json({
+            message: 'Events retrieved successfully',
+            events
+        });
+
+    } catch (error) {
+        console.error('Error fetching events:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
+app.post('/addEvent', async (req, res) => {
+    const eventDetails = req.body;
+    const teacherName = eventDetails.PostedBy;
+    const eventName = eventDetails.EventName;
+
+    try {
+        
+        const eventSnapshot = await db.collection('Events')
+            .where('EventName', '==', eventName)
+            .where('PostedBy', '==', teacherName)
+            .get();
+
+        
+        const teacherSnapshot = await db.collection('Teachers')
+            .where('userName', '==', teacherName)
+            .get();
+
+        if (!teacherSnapshot.empty && eventSnapshot.empty) {
+            
+            const addedEventRef = await db.collection('Events').add(eventDetails);
+
+           
+            const teacherDocId = teacherSnapshot.docs[0].id;
+
+           
+            await db.collection('Teachers').doc(teacherDocId).update({
+                Events: admin.firestore.FieldValue.arrayUnion(eventDetails.EventName)
+            });
+
+            return res.status(200).json({
+                message: 'Event added successfully and linked to teacher',
+                eventDetails
+            });
+        } else {
+            return res.status(401).json({ error: "Event with same name already exists or teacher not found" });
+        }
+
+    } catch (error) {
+        console.error('Error adding event:', error);
+        return res.status(500).json({ error: 'Internal server error' });
+    }
+});
+app.post('/getUsers', async (req, res) => {
+    const { EventName } = req.body;
+
+    if (!EventName) {
+        return res.status(400).json({ error: "Missing EventName" });
+    }
+
+    try {
+        // Step 1: Query Applied collection for users who applied to the event
+        const appliedSnapshot = await db.collection('Applied')
+            .where('EventName', '==', EventName)
+            .get();
+
+        if (appliedSnapshot.empty) {
+            return res.status(404).json({ error: "No users found for this event" });
+        }
+
+        // Step 2: Get all userNames from applied users
+        const userNames = appliedSnapshot.docs.map(doc => doc.data().userName);
+
+        // Step 3: Get student details using userNames
+        const students = [];
+        for (const userName of userNames) {
+            const studentSnapshot = await db.collection('Students')
+                .where('userName', '==', userName)
+                .get();
+
+            if (!studentSnapshot.empty) {
+                const studentData = studentSnapshot.docs[0].data();
+                students.push({
+                    name: studentData.name,
+                    email: studentData.email,
+                    branch: studentData.branch
+                });
+            }
+        }
+
+        return res.status(200).json(students);
+
+    } catch (error) {
+        console.error('Error fetching users:', error);
+        return res.status(500).json({ error: 'Internal server error' });
+    }
+});
 
 
 

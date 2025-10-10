@@ -2,10 +2,10 @@ import React, {useState,useMemo} from 'react'
 import '../studentNavgationPages/event.scss'
 import { Link } from 'react-router-dom';
 
-function Event(props) {
+function TeacherEvents(props) {
     const [event,setEvent] =useState(props.val)
     const [skills,useSkills]=useState(event.skills);
-    const [applied,useApplied] = useState(props.applied?props.applied:false);
+
     
     const skillsSet = useMemo(() => {
       
@@ -19,23 +19,18 @@ function Event(props) {
   return (
     
         <div className="event_container">
-            <div className="apply_tag" style={applied?{display:'inline'}:null}>applied</div>
+           
             <div className="userPost">
                     <div className="userProfile_img">
                         <img src={img_} alt="" />
                     </div>
                     
-                    {applied ? (
-                            <div className='profile_info'>
+                    
+                    <Link to={`/eventTeacher/${encodeURIComponent(event.EventName)}`} className='profile_info'>
                                 <h3 className="companyName">{event.EventName}</h3>
                                 <h5 className="role">{event.Host_Role}</h5>
-                            </div>
-                            ) : (
-                            <Link to={`/event/${encodeURIComponent(event.EventName)}`} className='profile_info'>
-                                <h3 className="companyName">{event.EventName}</h3>
-                                <h5 className="role">{event.Host_Role}</h5>
-                            </Link>
-                            )}
+                    </Link>
+                           
             </div>
                 
             
@@ -46,4 +41,4 @@ function Event(props) {
   )
 }
 
-export default Event
+export default TeacherEvents

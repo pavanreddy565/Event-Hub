@@ -4,6 +4,36 @@
     padding: auto;
     margin: 0;
 }
+.custom-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 70vh;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: #333;
+
+  .spinner {
+    width: 50px;
+    height: 50px;
+    border: 5px solid #ccc;
+    border-top: 5px solid #007bff;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-bottom: 15px;
+  }
+
+  p {
+    font-size: 18px;
+  }
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
 body {
     font-family: Arial, sans-serif;
     line-height: 1.6;

@@ -9,6 +9,8 @@ import EventCard from './pages/EventCard';
 import './App.css'
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { Navigate } from 'react-router-dom';
+import AddEvent from './pages/teacherNavigationPages/AddEvent';
+import EventTeacher from './pages/teacherNavigationPages/EventTeacher';
 
 const ProtectedRoute = ({ children, allowedRoles }) => {
   const isAuthenticated = localStorage.getItem('isAuthenticated') === 'true';
@@ -63,6 +65,23 @@ function App() {
             element={
               <ProtectedRoute allowedRoles={['student', 'teacher']}>
                 <Profile/>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path='/addEvent'
+            element={
+              <ProtectedRoute allowedRoles={['teacher']}>
+                <AddEvent/>
+              </ProtectedRoute>
+            }
+          />
+
+          <Route 
+            path='/eventTeacher/:eventName' 
+            element={
+              <ProtectedRoute allowedRoles={[ 'teacher']}>
+                <EventTeacher/>
               </ProtectedRoute>
             }
           />
