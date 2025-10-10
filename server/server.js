@@ -159,20 +159,31 @@ app.post('/apply', async (req, res) => {
     });
 
 app.post('/StudentAdmin', async (req, res) => {
-    const { start, end } = req.body;
+    const students = req.body; 
     const promises = [];
-    for (let i = start; i < end; i++) {
-        const userName = 'user' + (i < 10 ? '0' : '') + i;
-        const promise = db.collection('Students').add({ userName, password: '1234' });
+
+    if (!Array.isArray(students)) {
+        return res.status(400).json({ error: 'Invalid input. Expected an array of student records.' });
+    }
+
+    for (const student of students) {
+       
+        const { userName, password, name, branch, email } = student;
+        if (!userName || !password || !name || !branch || !email) {
+            console.warn('Skipping invalid student record:', student);
+            continue; 
+        }
+
+        const promise = db.collection('Students').add(student);
         promises.push(promise);
     }
 
     try {
         await Promise.all(promises);
-        res.json('success');
+        res.json({ message: 'All students added successfully' });
     } catch (err) {
         console.error('Error adding student data:', err);
-        res.json('error while adding student data');
+        res.status(500).json({ error: 'Error while adding student data' });
     }
 });
 
