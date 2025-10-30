@@ -1,32 +1,164 @@
-.MainContent{
-    // width: 100%;
-    position:absolute;
-    top:0;
-    .HeaderContent{
-        width: 100vw;
-        border-radius: 0 0 30px 30px;
+.mainWarp {
+  width: 100%;
+  min-height: 100vh;
+  position: relative;
+}
+
+.MainContent {
+  position: relative;
+  width: 100%;
+  padding-bottom: 20px;
+  
+  .HeaderContent {
+    width: 100%;
+    border-radius: 0 0 30px 30px;
+    padding: 20px;
+    background-color: #e2e8ef;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    
+    .wishUser {
+      margin-bottom: 15px;
+      
+      h1 {
+        margin: 0;
+        font-size: 24px;
+      }
     }
     
-
-}
-.events{
-       margin-top: -15px;
-        display: flex;
-        flex-wrap: wrap;
-        padding: 0 20px;
-        gap:2em;
-        .event{
-            width: 30%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            // background-color: red;
-
+    .generalUI {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      flex-wrap: wrap;
+      
+      .searchThings {
+        flex: 1;
+        min-width: 200px;
+        position: relative;
+        
+        .search_bar {
+          display: flex;
+          align-items: center;
+          background: #f5f5f5;
+          border-radius: 8px;
+          padding: 8px 12px;
+          
+          input {
+            flex: 1;
+            border: none;
+            background: transparent;
+            outline: none;
+            font-size: 14px;
+          }
+          
+          i {
+            color: #666;
+          }
         }
+        
+        .searchOptions {
+          position: absolute;
+          top: 100%;
+          left: 0;
+          right: 0;
+          background: white;
+          border-radius: 8px;
+          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+          margin-top: 8px;
+          max-height: 300px;
+          overflow-y: auto;
+          z-index: 100;
+          
+          .searchOptionRow {
+            padding: 10px 15px;
+            
+            &:hover {
+              background-color: #f5f5f5;
+            }
+            
+            a {
+              text-decoration: none;
+              color: #333;
+              display: block;
+            }
+          }
+        }
+      }
+      
+      .notifications {
+        position: relative;
+        
+        .notification_pannel {
+          position: absolute;
+          top: calc(100% + 10px);
+          right: 0;
+          background: white;
+          border-radius: 8px;
+          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+          padding: 15px;
+          min-width: 200px;
+          z-index: 100;
+          
+          h4 {
+            margin: 0;
+            color: #666;
+          }
+        }
+      }
+      
+      .userProfile {
+        .profile {
+          img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+          }
+        }
+      }
+    }
+  }
 }
+
+.events {
+  margin-top: 30px;
+  display: flex;
+  flex-wrap: wrap;
+  padding: 0 20px;
+  gap: 2em;
+  
+  .event {
+    width: calc(25% - 1.5em);
+    min-width: 200px;
+    display: flex;
+    align-items: stretch;
+    justify-content: center;
+    
+    // Allow content to determine height, all will match tallest
+    > * {
+      width: 100%;
+      min-height: 220px;
+      display: flex;
+      flex-direction: column;
+    }
+    
+    @media (max-width: 1400px) {
+      width: calc(33.333% - 1.35em);
+    }
+    
+    @media (max-width: 1024px) {
+      width: calc(50% - 1em);
+    }
+    
+    @media (max-width: 768px) {
+      width: 100%;
+    }
+  }
+}
+
 .add-event-box {
-  width: 200px;
-  height: 220px;
+  width: 100%;
+  min-height: 220px;
   background-color: #fff;
   border: 2px dashed #aaa;
   border-radius: 12px;
@@ -38,10 +170,16 @@
   color: #333;
   transition: all 0.3s ease;
   cursor: pointer;
+  box-sizing: border-box;
 
   &:hover {
     background-color: #f0f0f0;
     border-color: #666;
+    
+    .add-event-circle {
+      background-color: #0056b3;
+      transform: scale(1.1);
+    }
   }
 
   .add-event-circle {
@@ -55,6 +193,7 @@
     align-items: center;
     justify-content: center;
     margin-bottom: 10px;
+    transition: all 0.3s ease;
   }
 
   .plus-icon {

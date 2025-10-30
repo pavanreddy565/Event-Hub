@@ -4,35 +4,49 @@ import './Teacherboard.scss';
 import { Routes, Route, Link, useLocation } from 'react-router-dom';
 import axios from 'axios';
 import TeacherEvents from './teacherNavigationPages/TeacherEvents';
+
 function Teacherboard() {
   const [userDetails, setUserDetails] = useState(null);
   const [searchText, setSearch] = useState('');
-  
   const [notification, setNotification] = useState(false);
-  
+  const [events, setEvents] = useState([]);
+  const [eventTitles, setEventTitles] = useState([]);
   
   const location = useLocation();
   const isActive = location.pathname;
 
-  const [events, setEvents] = useState([]);
-  const [eventTitles, setEventTitles] = useState([]);
-
-  // Fetch events from backend
-  
-
-  // Extract event names
-
-
-  // Auto-load user from localStorage
+  // Auto-load user from localStorage and fetch events
   useEffect(() => {
     const storedUserDetails = localStorage.getItem('userDetails');
+
     if (storedUserDetails) {
-      setUserDetails(JSON.parse(storedUserDetails));
+      const parsedUser = JSON.parse(storedUserDetails);
+      setUserDetails(parsedUser);
+
+      // Fetch teacher events
+      axios.post('http://localhost:8080/teacherEvent', {
+        userName: parsedUser.userName,
+      })
+      .then(response => {
+        if (response.status === 200) {
+          console.log("Teacher's events:", response.data.events);
+          setEvents(response.data.events || []);
+        }
+      })
+      .catch(error => {
+        console.error('Error fetching teacher events:', error);
+        setEvents([]); // Set empty array on error
+      });
     }
   }, []);
 
-  // Sync user details
-  
+  // Extract event titles when events change
+  useEffect(() => {
+    if (Array.isArray(events)) {
+      const titles = events.map(event => event.EventName);
+      setEventTitles(titles);
+    }
+  }, [events]);
 
   // Search filtering
   const filteredevents = useMemo(() => {
@@ -42,36 +56,6 @@ function Teacherboard() {
       return searchTerm && title.startsWith(searchTerm) && title !== searchTerm;
     });
   }, [searchText, eventTitles]);
-  useEffect(() => {
-    const storedUserDetails = localStorage.getItem('userDetails');
-
-    if (storedUserDetails) {
-      const parsedUser = JSON.parse(storedUserDetails);
-      setUserDetails(parsedUser);
-
-      // Now make the POST request with userName
-      axios.post('http://localhost:8080/teacherEvent', {
-        userName: parsedUser.userName,
-      })
-      .then(response => {
-        if (response.status === 200) {
-          console.log("Teacher's events:", response.data.events);
-          setEvents(response.data.events); // or whatever state you're updating
-        }
-      })
-      .catch(error => {
-        console.error('Error fetching teacher events:', error);
-      });
-    }
-  }, []);
-
-  useEffect(() => {
-    if (Array.isArray(events)) {
-      const titles = events.map(event => event.EventName);
-      setEventTitles(titles);
-    }
-  }, [events]);
-  
 
   const img_ = userDetails?.profileImg || '../src/assets/image.png';
 
@@ -96,15 +80,17 @@ function Teacherboard() {
               </div>
 
               {/* Autocomplete Search Results */}
-              <div className="searchOptions">
-                {filteredevents.map((item) => (
-                  <div className="searchOptionRow" key={item}>
-                    <Link to={`/event/${encodeURIComponent(item)}`} className="profile_info">
-                      {item}
-                    </Link>
-                  </div>
-                ))}
-              </div>
+              {filteredevents.length > 0 && (
+                <div className="searchOptions">
+                  {filteredevents.map((item) => (
+                    <div className="searchOptionRow" key={item}>
+                      <Link to={`/event/${encodeURIComponent(item)}`} className="profile_info">
+                        {item}
+                      </Link>
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
 
             {/* Notification Bell */}
@@ -131,28 +117,25 @@ function Teacherboard() {
             </div>
           </div>
         </div>
-        
-        {/* You can render the events or dashboard content here */}
-        {/* Example: */}
-        {/* <DashboardEvents userSkills={userSkills} events={events} /> */}
       </div>
-      <div className="events">
-          <div className="event">
-            {events.map((event, idx) => (
-                  // You can pass applied={false} or true if you have that logic
-                  <TeacherEvents key={idx} val={event} applied={false} />
-                ))}
-          </div>
-          <div className="event">
-            <Link to="/addEvent" className="add-event-box">
-              <div className="add-event-circle">
-                <span className="plus-icon">+</span>
-              </div>
-              <p>Add New Event</p>
-            </Link>
-          </div>
 
+      {/* Events Section */}
+      <div className="events">
+        {events.map((event, idx) => (
+          <div className="event" key={idx}>
+            <TeacherEvents val={event} applied={false} />
+          </div>
+        ))}
+        
+        <div className="event">
+          <Link to="/addEvent" className="add-event-box">
+            <div className="add-event-circle">
+              <span className="plus-icon">+</span>
+            </div>
+            <p>Add New Event</p>
+          </Link>
         </div>
+      </div>
     </div>
   );
 }
